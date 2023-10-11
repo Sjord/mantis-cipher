@@ -1,0 +1,53 @@
+/* Skinny-64-64 */
+Key: f5269826fc681238
+Plaintext: 06034f957724d19d
+Ciphertext: bb39dfb2429b8ac7
+
+/* Skinny-64-128 */
+Key: 9eb93640d088da6376a39d1c8bea71e1
+Plaintext: cf16cfe8fd0f98aa
+Ciphertext: 6ceda1f43de92b9e
+
+/* Skinny-64-192 */
+Key: ed00c85b120d68618753e24bfd908f60b2dbb41b422dfcd0
+Plaintext: 530c61d35e8663c3
+Ciphertext: dd2cf1a8f330303c
+
+/* Skinny-128-128 */
+Key : 4f55cfb0520cac52fd92c15f37073e93
+Plaintext: f20adb0eb08b648a3b2eeed1f0adda14
+Ciphertext: 22ff30d498ea62d7e45b476e33675b74
+
+/* Skinny-128-256 */
+Key: 009cec81605d4ac1d2ae9e3085d7a1f31ac123ebfc00fddcf01046ceeddfcab3
+Plaintext: 3a0c47767a26a68dd382a695e7022e25
+Ciphertext: b731d98a4bde147a7ed4a6f16b9b587f
+
+/* Skinny-128-384 */
+Key: df889548cfc7ea52d296339301797449ab588a34a47f1ab2dfe9c8293fbea9a5ab1afac2611012cd8cef952618c3ebe8
+Plaintext: a3994b66ad85a3459f44e92b08f550cb
+Ciphertext: 94ecf589e2017c601b38c6346a10dcfa
+
+/* MANTIS5 */
+Key: 92f09952c625e3e9d7a060f714c0292b
+Tweak: ba912e6f1055fed2
+Plaintext: 3b5c77a4921f9718
+Ciphertext: d6522035c1c0c6c1
+
+/* MANTIS6 */
+Key: 92f09952c625e3e9d7a060f714c0292b
+Tweak: ba912e6f1055fed2
+Plaintext: d6522035c1c0c6c1
+Ciphertext: 60e43457311936fd
+
+/* MANTIS7 */
+Key: 92f09952c625e3e9d7a060f714c0292b
+Tweak: ba912e6f1055fed2
+Plaintext: 60e43457311936fd
+Ciphertext: 308 e8a07f168f517
+
+/* MANTIS8 */
+Key: 92f09952c625e3e9d7a060f714c0292b
+Tweak: ba912e6f1055fed2
+Plaintext: 308e8a07f168f517
+Ciphertext: 971ea01a86b410bb
