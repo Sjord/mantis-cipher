@@ -86,14 +86,14 @@ class Mantis:
         print("tweak", self.T)
 
         for r in range(self.rounds):
-            print("state", self.IS)
             self.round(r, inverse=False)
         self.sub_cells()
 
         self.mix_columns()
 
         self.sub_cells()
-        for r in range(self.rounds):
+        for r in range(self.rounds - 1, 0, -1):
+            print("state", self.IS)
             self.round(r, inverse=True)
         
         self.add_tweakey(self.k0prime ^ self.k1 ^ self.a ^ self.T)
@@ -106,7 +106,7 @@ class Mantis:
     def round(self, r, inverse):
         self.sub_cells()
         self.add_constant(r)
-        self.add_round_tweakey(r, inverse)
+        self.add_round_tweakey(inverse)
         self.permutate_cells()
         self.mix_columns()
 
@@ -136,7 +136,7 @@ class Mantis:
         rc = self.rc[c]
         self.IS ^= rc
 
-    def add_round_tweakey(self, r, inverse):
+    def add_round_tweakey(self, inverse):
         h = [6, 5, 14, 15, 0, 1, 2, 3, 7, 12, 13, 4, 8, 9, 10, 11]
         T = self.T.clone()
         for i in range(16):
