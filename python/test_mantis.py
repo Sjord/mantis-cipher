@@ -1,5 +1,5 @@
 import unittest
-from mantis import Value
+from mantis import Value, Mantis
 
 class TestValue(unittest.TestCase):
     def test_indexer(self):
@@ -33,3 +33,40 @@ class TestValue(unittest.TestCase):
         v = Value(0x123456789abcdef3)
         v = v >> 4
         self.assertEqual(v, Value(0x123456789abcdef))
+
+
+class TestMantis(unittest.TestCase):
+    key = bytes.fromhex("92f09952c625e3e9d7a060f714c0292b")
+    tweak = bytes.fromhex("ba912e6f1055fed2")
+    plaintext = bytes.fromhex("3b5c77a4921f9718")
+
+    def test_permutate_cells_reflexive(self):
+        m = Mantis(self.key, self.tweak, 5)
+        m.encrypt(self.plaintext)
+
+        state = m.IS.clone()
+        m.permutate_cells()
+        m.permutate_cells_inverse()
+        self.assertEqual(state, m.IS)
+
+    def test_add_round_tweakey_reflexive(self):
+        m = Mantis(self.key, self.tweak, 5)
+        m.encrypt(self.plaintext)
+
+        tweak = m.T.clone()
+        m.add_round_tweakey()
+        m.add_round_tweakey_inverse()
+        self.assertEqual(tweak, m.T)
+
+    def test_vectors(self):
+        data = [
+            (5, "3b5c77a4921f9718", "d6522035c1c0c6c1"),
+            (6, "d6522035c1c0c6c1", "60e43457311936fd"),
+            (7, "60e43457311936fd", "308e8a07f168f517"),
+            (8, "308e8a07f168f517", "971ea01a86b410bb")
+        ]
+        for rounds, plaintext, expected in data:
+            m = Mantis(self.key, self.tweak, rounds)
+            ciphertext = m.encrypt(bytes.fromhex(plaintext))
+            self.assertEqual(bytes.fromhex(expected), ciphertext)
+        

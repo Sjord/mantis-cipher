@@ -74,27 +74,20 @@ class Mantis:
         self.k0 = Value(key[:8])
         self.k1 = Value(key[8:])
         self.k0prime = self.k0.ror(1) ^ self.k0 >> 63
-        print(self.k0)
-        print(self.k0prime)
-        print(self.k1)
 
     def encrypt(self, plaintext):
         self.IS = Value(plaintext)
-        print("state", self.IS)
         self.add_tweakey(self.k0 ^ self.k1 ^ self.T)
-        print("state", self.IS)
-        print("tweak", self.T)
 
         for r in range(self.rounds):
-            self.round(r, inverse=False)
+            self.round(r)
         self.sub_cells()
 
         self.mix_columns()
 
         self.sub_cells()
-        for r in range(self.rounds - 1, 0, -1):
-            print("state", self.IS)
-            self.round(r, inverse=True)
+        for r in range(self.rounds - 1, -1, -1):
+            self.round_inverse(r)
         
         self.add_tweakey(self.k0prime ^ self.k1 ^ self.a ^ self.T)
         return self.IS.to_bytes()
@@ -103,12 +96,19 @@ class Mantis:
         self.IS = Value(ciphertext)
         pass
 
-    def round(self, r, inverse):
+    def round(self, r):
         self.sub_cells()
         self.add_constant(r)
-        self.add_round_tweakey(inverse)
+        self.add_round_tweakey()
         self.permutate_cells()
         self.mix_columns()
+    
+    def round_inverse(self, r):
+        self.mix_columns()
+        self.permutate_cells_inverse()
+        self.add_round_tweakey_inverse()
+        self.add_constant(r)
+        self.sub_cells()
 
     def sub_cells(self):
         sbox = [
@@ -136,22 +136,33 @@ class Mantis:
         rc = self.rc[c]
         self.IS ^= rc
 
-    def add_round_tweakey(self, inverse):
+    def add_round_tweakey(self):
         h = [6, 5, 14, 15, 0, 1, 2, 3, 7, 12, 13, 4, 8, 9, 10, 11]
         T = self.T.clone()
         for i in range(16):
             self.T[i] = T[h[i]]
 
-        if inverse:
-            self.IS ^= self.T ^ self.k1 ^ self.a
-        else:
-            self.IS ^= self.T ^ self.k1
+        self.IS ^= self.T ^ self.k1
+
+    def add_round_tweakey_inverse(self):
+        self.IS ^= self.T ^ self.k1 ^ self.a
+
+        h = [4, 5, 6, 7, 11, 1, 0, 8, 12, 13, 14, 15, 9, 10, 2, 3]
+        T = self.T.clone()
+        for i in range(16):
+            self.T[i] = T[h[i]]
 
     def add_tweakey(self, tk):
         self.IS ^= tk
 
     def permutate_cells(self):
         P = [0, 11, 6, 13, 10, 1, 12, 7, 5, 14, 3, 8, 15, 4, 9, 2]
+        state = self.IS.clone()
+        for i in range(16):
+            self.IS[i] = state[P[i]]
+
+    def permutate_cells_inverse(self):
+        P = [0, 5, 15, 10, 13, 8, 2, 7, 11, 14, 4, 1, 6, 3, 9, 12]
         state = self.IS.clone()
         for i in range(16):
             self.IS[i] = state[P[i]]
