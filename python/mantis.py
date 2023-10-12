@@ -93,8 +93,12 @@ class Mantis:
         return self.IS.to_bytes()
 
     def decrypt(self, ciphertext):
-        self.IS = Value(ciphertext)
-        pass
+        old_values = (self.k0, self.k0prime, self.k1)
+        try:
+            (self.k0, self.k0prime, self.k1) = (self.k0prime, self.k0, self.k1 ^ self.a)
+            return self.encrypt(ciphertext)
+        finally:
+            (self.k0, self.k0prime, self.k1) = old_values
 
     def round(self, r):
         self.sub_cells()
