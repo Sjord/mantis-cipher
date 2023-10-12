@@ -53,6 +53,19 @@ class Value:
     def clone(self):
         return Value(self.val)
 
+    def sbox(self, sbox):
+        val = self.val
+        result = 0
+
+        for i in range(16):
+            result <<= 4
+            nibble = (val & 0xF000000000000000) >> 60
+            result |= sbox[nibble]
+            val <<= 4
+
+        return Value(result)
+
+
 class Mantis:
     rc = [
         Value(0x13198A2E03707344),
@@ -88,7 +101,7 @@ class Mantis:
         self.sub_cells()
         for r in range(self.rounds - 1, -1, -1):
             self.round_inverse(r)
-        
+
         self.add_tweakey(self.k0prime ^ self.k1 ^ self.a ^ self.T)
         return self.IS.to_bytes()
 
@@ -106,7 +119,7 @@ class Mantis:
         self.add_round_tweakey()
         self.permutate_cells()
         self.mix_columns()
-    
+
     def round_inverse(self, r):
         self.mix_columns()
         self.permutate_cells_inverse()
@@ -133,8 +146,7 @@ class Mantis:
             0x4,
             0x6,
         ]
-        for i in range(16):
-            self.IS[i] = sbox[self.IS[i]]
+        self.IS = self.IS.sbox(sbox)
 
     def add_constant(self, c):
         rc = self.rc[c]
