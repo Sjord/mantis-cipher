@@ -65,6 +65,13 @@ class Value:
 
         return Value(result)
 
+    def permutate(self, p):
+        result = 0
+        for i in range(16):
+            result <<= 4
+            result |= self[p[i]]
+        return Value(result)
+
 
 class Mantis:
     rc = [
@@ -154,34 +161,24 @@ class Mantis:
 
     def add_round_tweakey(self):
         h = [6, 5, 14, 15, 0, 1, 2, 3, 7, 12, 13, 4, 8, 9, 10, 11]
-        T = self.T.clone()
-        for i in range(16):
-            self.T[i] = T[h[i]]
-
+        self.T = self.T.permutate(h)
         self.IS ^= self.T ^ self.k1
 
     def add_round_tweakey_inverse(self):
         self.IS ^= self.T ^ self.k1 ^ self.a
-
         h = [4, 5, 6, 7, 11, 1, 0, 8, 12, 13, 14, 15, 9, 10, 2, 3]
-        T = self.T.clone()
-        for i in range(16):
-            self.T[i] = T[h[i]]
+        self.T = self.T.permutate(h)
 
     def add_tweakey(self, tk):
         self.IS ^= tk
 
     def permutate_cells(self):
         P = [0, 11, 6, 13, 10, 1, 12, 7, 5, 14, 3, 8, 15, 4, 9, 2]
-        state = self.IS.clone()
-        for i in range(16):
-            self.IS[i] = state[P[i]]
+        self.IS = self.IS.permutate(P)
 
     def permutate_cells_inverse(self):
         P = [0, 5, 15, 10, 13, 8, 2, 7, 11, 14, 4, 1, 6, 3, 9, 12]
-        state = self.IS.clone()
-        for i in range(16):
-            self.IS[i] = state[P[i]]
+        self.IS = self.IS.permutate(P)
 
     def mix_columns(self):
         def M(v):
