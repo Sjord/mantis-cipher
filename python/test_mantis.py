@@ -3,16 +3,6 @@ import secrets
 from mantis import Value, Mantis
 
 class TestValue(unittest.TestCase):
-    def test_indexer(self):
-        v = Value(0x123456789abcdef0)
-        self.assertEqual(0x1, v[0])
-        self.assertEqual(0x9, v[8])
-        self.assertEqual(0x0, v[15])
-
-        v[0] = 0xf
-        v[14] = 0x3
-        self.assertEqual(int(v), 0xf23456789abcde30)
-
     def test_xor(self):
         v1 = Value(0x123456789abcdef0)
         v2 = Value(0x0000010000100010)

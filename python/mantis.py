@@ -6,26 +6,6 @@ class Value:
             assert isinstance(val, int)
             self.val = val
 
-    def __getitem__(self, index):
-        assert isinstance(index, int)
-        assert index >= 0
-        assert index < 16
-
-        shift = (15 - index) * 4
-        return self.val >> shift & 0xF
-
-    def __setitem__(self, index, nibble):
-        assert isinstance(index, int)
-        assert isinstance(nibble, int)
-        assert index >= 0
-        assert index < 16
-        assert nibble >= 0
-        assert nibble < 16
-
-        shift = (15 - index) * 4
-        mask = 0xF << shift
-        self.val = (self.val & ~mask) | (nibble << shift)
-
     def __int__(self):
         return self.val
 
