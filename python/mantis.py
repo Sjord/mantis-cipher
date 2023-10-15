@@ -50,6 +50,15 @@ class Value:
     def to_bytes(self):
         return self.val.to_bytes(8, "big")
 
+    def to_nibbles(self):
+        result = []
+        val = self.val
+        for i in range(16):
+            nibble = (val & 0xF000000000000000) >> 60
+            result.append(nibble)
+            val <<= 4
+        return result
+
     def clone(self):
         return Value(self.val)
 
@@ -67,9 +76,10 @@ class Value:
 
     def permutate(self, p):
         result = 0
+        nibbles = self.to_nibbles()
         for i in range(16):
             result <<= 4
-            result |= self[p[i]]
+            result |= nibbles[p[i]]
         return Value(result)
 
     def mix_columns(self):
