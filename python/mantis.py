@@ -72,6 +72,25 @@ class Value:
             result |= self[p[i]]
         return Value(result)
 
+    def mix_columns(self):
+        def M(v):
+            return [
+                v[1] ^ v[2] ^ v[3],
+                v[0] ^ v[2] ^ v[3],
+                v[0] ^ v[1] ^ v[3],
+                v[0] ^ v[1] ^ v[2],
+            ]
+
+        rows = [
+            (self.val >> 48) & 0xFFFF,
+            (self.val >> 32) & 0xFFFF,
+            (self.val >> 16) & 0xFFFF,
+            (self.val >> 0) & 0xFFFF,
+        ]
+        rows = M(rows)
+        new_value = (rows[0] << 48) | (rows[1] << 32) | (rows[2] << 16) | rows[3]
+        return Value(new_value)
+
 
 class Mantis:
     rc = [
@@ -181,28 +200,7 @@ class Mantis:
         self.IS = self.IS.permutate(P)
 
     def mix_columns(self):
-        def M(v):
-            return [
-                v[1] ^ v[2] ^ v[3],
-                v[0] ^ v[2] ^ v[3],
-                v[0] ^ v[1] ^ v[3],
-                v[0] ^ v[1] ^ v[2],
-            ]
-
-        for col in range(4):
-            old_col = [
-                self.IS[col],
-                self.IS[col + 4],
-                self.IS[col + 8],
-                self.IS[col + 12],
-            ]
-            new_col = M(old_col)
-            (
-                self.IS[col],
-                self.IS[col + 4],
-                self.IS[col + 8],
-                self.IS[col + 12],
-            ) = new_col
+        self.IS = self.IS.mix_columns()
 
 
 if __name__ == "__main__":
