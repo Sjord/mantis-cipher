@@ -65,6 +65,11 @@ class Encryption:
 
     a = 0x243F6A8885A308D3
 
+    h = (6, 5, 14, 15, 0, 1, 2, 3, 7, 12, 13, 4, 8, 9, 10, 11)
+    h_inv = (4, 5, 6, 7, 11, 1, 0, 8, 12, 13, 14, 15, 9, 10, 2, 3)
+    P = (0, 11, 6, 13, 10, 1, 12, 7, 5, 14, 3, 8, 15, 4, 9, 2)
+    P_inv = (0, 5, 15, 10, 13, 8, 2, 7, 11, 14, 4, 1, 6, 3, 9, 12)
+
     def __init__(
         self, k0: int, k0prime: int, k1: int, rounds: int, tweak: int, message: int
     ):
@@ -140,42 +145,35 @@ class Encryption:
         self.IS ^= rc
 
     def add_round_tweakey(self):
-        h = [6, 5, 14, 15, 0, 1, 2, 3, 7, 12, 13, 4, 8, 9, 10, 11]
-        self.T = permutate(self.T, h)
+        self.T = permutate(self.T, self.h)
         self.IS ^= self.T ^ self.k1
 
     def add_round_tweakey_inverse(self):
         self.IS ^= self.T ^ self.k1 ^ self.a
-        h = [4, 5, 6, 7, 11, 1, 0, 8, 12, 13, 14, 15, 9, 10, 2, 3]
-        self.T = permutate(self.T, h)
+        self.T = permutate(self.T, self.h_inv)
 
     def add_tweakey(self, tk: int):
         self.IS ^= tk
 
     def permutate_cells(self):
-        P = [0, 11, 6, 13, 10, 1, 12, 7, 5, 14, 3, 8, 15, 4, 9, 2]
-        self.IS = permutate(self.IS, P)
+        self.IS = permutate(self.IS, self.P)
 
     def permutate_cells_inverse(self):
-        P = [0, 5, 15, 10, 13, 8, 2, 7, 11, 14, 4, 1, 6, 3, 9, 12]
-        self.IS = permutate(self.IS, P)
+        self.IS = permutate(self.IS, self.P_inv)
 
     def mix_columns(self):
-        def M(v):
-            return [
-                v[1] ^ v[2] ^ v[3],
-                v[0] ^ v[2] ^ v[3],
-                v[0] ^ v[1] ^ v[3],
-                v[0] ^ v[1] ^ v[2],
-            ]
-
         rows = [
             (self.IS >> 48) & 0xFFFF,
             (self.IS >> 32) & 0xFFFF,
             (self.IS >> 16) & 0xFFFF,
             (self.IS >> 0) & 0xFFFF,
         ]
-        rows = M(rows)
+        rows = [
+            rows[1] ^ rows[2] ^ rows[3],
+            rows[0] ^ rows[2] ^ rows[3],
+            rows[0] ^ rows[1] ^ rows[3],
+            rows[0] ^ rows[1] ^ rows[2],
+        ]
         self.IS = (rows[0] << 48) | (rows[1] << 32) | (rows[2] << 16) | rows[3]
 
 
