@@ -2,12 +2,24 @@ def to_nibbles(val: int):
     assert isinstance(val, int)
     assert 0 <= val < 1 << 64
 
-    result = []
-    for i in range(16):
-        nibble = (val & 0xF000000000000000) >> 60
-        result.append(nibble)
-        val <<= 4
-    return result
+    return (
+        val >> 60 & 0xF,
+        val >> 56 & 0xF,
+        val >> 52 & 0xF,
+        val >> 48 & 0xF,
+        val >> 44 & 0xF,
+        val >> 40 & 0xF,
+        val >> 36 & 0xF,
+        val >> 32 & 0xF,
+        val >> 28 & 0xF,
+        val >> 24 & 0xF,
+        val >> 20 & 0xF,
+        val >> 16 & 0xF,
+        val >> 12 & 0xF,
+        val >> 8 & 0xF,
+        val >> 4 & 0xF,
+        val >> 0 & 0xF,
+    )
 
 
 def permutate(val: int, p: list[int]):
