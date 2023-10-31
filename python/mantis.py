@@ -18,7 +18,7 @@ def to_nibbles(val: int):
         val >> 12 & 0xF,
         val >> 8 & 0xF,
         val >> 4 & 0xF,
-        val >> 0 & 0xF,
+        val & 0xF,
     )
 
 
@@ -26,12 +26,25 @@ def permutate(val: int, p: list[int]):
     assert isinstance(val, int)
     assert 0 <= val < 1 << 64
 
-    result = 0
     nibbles = to_nibbles(val)
-    for i in range(16):
-        result <<= 4
-        result |= nibbles[p[i]]
-    return result
+    return (
+        nibbles[p[0]] << 60
+        | nibbles[p[1]] << 56
+        | nibbles[p[2]] << 52
+        | nibbles[p[3]] << 48
+        | nibbles[p[4]] << 44
+        | nibbles[p[5]] << 40
+        | nibbles[p[6]] << 36
+        | nibbles[p[7]] << 32
+        | nibbles[p[8]] << 28
+        | nibbles[p[9]] << 24
+        | nibbles[p[10]] << 20
+        | nibbles[p[11]] << 16
+        | nibbles[p[12]] << 12
+        | nibbles[p[13]] << 8
+        | nibbles[p[14]] << 4
+        | nibbles[p[15]]
+    )
 
 
 def to_int(val):
