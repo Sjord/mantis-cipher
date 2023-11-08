@@ -1,10 +1,5 @@
 <?php
 
-
-function divideBy58($num) {
-    return intdiv(($num >> 1) & 0x7FFFFFFFFFFFFFFF, 29);
-}
-
 function encode(int $input) {
     $alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     
@@ -18,7 +13,7 @@ function encode(int $input) {
         if ($num < 0) {
             $rem = ($rem + 24) % 58;
         }
-        $num = divideBy58($num);
+        $num = intdiv(($num >> 1) & 0x7FFFFFFFFFFFFFFF, 29);
         $result = $alphabet[$rem] . $result;
     }
 
