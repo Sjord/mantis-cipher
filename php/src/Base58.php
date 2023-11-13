@@ -17,7 +17,7 @@ function encode(int $input) {
         $result = $alphabet[$rem] . $result;
     }
 
-    assert($num == 0);
+    assert($num === 0);
 
     return $result;
 }
@@ -86,11 +86,11 @@ function decode(string $input) {
     ];
     
     if (strlen($input) !== 11) {
-        throw new Exception("Expected token of length 11, got token of length " . strlen($input));
+        throw new LengthException("Expected token of length 11, got token of length " . strlen($input));
     }
 
     if ($input > $max_token) {
-        throw new Exception("Token is too big to decode into a 64-bit integer");
+        throw new RangeException("Token is too big to decode into a 64-bit integer");
     }
 
     $result = 0;
