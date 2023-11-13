@@ -1,17 +1,12 @@
 <?php
 
 function unsignedMultiply33($hash) {
-    $s = ($hash << 5);
-
-    $carry = $s & $hash;
-    $result = $s ^ $hash;
-    while ($carry != 0) {
-        $shiftedcarry = $carry << 1;
-        $carry = $result & $shiftedcarry;
-        $result ^= $shiftedcarry;
+    $s = $hash << 5;
+    $sum = PHP_INT_MIN + ($s & PHP_INT_MAX) + ($hash & PHP_INT_MAX);
+    if (($s ^ $hash) < 0) {
+        return $sum;
     }
-    return $result;
-
+    return $sum ^ PHP_INT_MIN;
 }
 
 function djb2a($str) {
@@ -25,9 +20,3 @@ function djb2a($str) {
 
     return $hash;
 }
-
-foreach ($argv as $arg) {
-    printf("%s: %016x\n", $arg, djb2a($arg));
-    // 36aab719f15c9fa7
-}
-
