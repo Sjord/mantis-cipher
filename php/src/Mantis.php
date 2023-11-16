@@ -100,6 +100,13 @@ final class Encryption {
             hex_const("C0AC29B7C97C50DD"),
             hex_const("3F84D5B5B5470917"),
             hex_const("9216D5D98979FB1B"),
+            hex_const("D1310BA698DFB5AC"),
+            hex_const("2FFD72DBD01ADFB7"),
+            hex_const("B8E1AFED6A267E96"),
+            hex_const("BA7C9045F12C7F99"),
+            hex_const("24A19947B3916CF7"),
+            hex_const("0801F2E2858EFC16"),
+            hex_const("636920D871574E69"),
         ];
     }
 
